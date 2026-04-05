@@ -98,7 +98,8 @@ function createDb() {
       target_rpe INTEGER,
       completed INTEGER NOT NULL DEFAULT 0,
       completed_workout_id INTEGER,
-      sort_order INTEGER NOT NULL DEFAULT 0
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      segments TEXT
     );
 
     CREATE TABLE IF NOT EXISTS chat_history (
@@ -129,6 +130,7 @@ function createDb() {
     "ALTER TABLE athlete ADD COLUMN strava_token_expires_at INTEGER",
     "ALTER TABLE athlete ADD COLUMN strava_athlete_id INTEGER",
     "ALTER TABLE workout_log ADD COLUMN strava_activity_id TEXT",
+    "ALTER TABLE training_plan_workout ADD COLUMN segments TEXT",
   ];
   for (const sql of migrations) {
     try { sqlite.exec(sql); } catch { /* column already exists */ }

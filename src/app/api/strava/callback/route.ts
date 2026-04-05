@@ -10,17 +10,17 @@ export async function GET(request: Request) {
   const error = url.searchParams.get("error");
 
   if (error || !code) {
-    return NextResponse.redirect(new URL("/history?strava=error", url.origin));
+    return NextResponse.redirect(new URL("/strava?error=auth", url.origin));
   }
 
   const creds = await getStravaCredentials();
   if (!creds) {
-    return NextResponse.redirect(new URL("/history?strava=no-config", url.origin));
+    return NextResponse.redirect(new URL("/strava?error=no-config", url.origin));
   }
 
   const [a] = await db.select().from(athlete).limit(1);
   if (!a) {
-    return NextResponse.redirect(new URL("/history?strava=error", url.origin));
+    return NextResponse.redirect(new URL("/strava?error=auth", url.origin));
   }
 
   try {
@@ -37,9 +37,9 @@ export async function GET(request: Request) {
       })
       .where(eq(athlete.id, a.id));
 
-    return NextResponse.redirect(new URL("/history?tab=strava", url.origin));
+    return NextResponse.redirect(new URL("/strava", url.origin));
   } catch (err) {
     console.error("Strava callback error:", err);
-    return NextResponse.redirect(new URL("/history?strava=error", url.origin));
+    return NextResponse.redirect(new URL("/strava?error=auth", url.origin));
   }
 }

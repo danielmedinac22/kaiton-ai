@@ -2,13 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessageSquare, History } from "lucide-react";
+import {
+  LayoutDashboard,
+  MessageSquare,
+  Footprints,
+  CalendarDays,
+  Activity,
+  Settings,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Inicio", icon: LayoutDashboard },
   { href: "/coach", label: "Coach", icon: MessageSquare },
-  { href: "/history", label: "Historial", icon: History },
+  { href: "/workouts", label: "Entrenos", icon: Footprints },
+  { href: "/plan", label: "Plan", icon: CalendarDays },
+  { href: "/strava", label: "Strava", icon: Activity },
+  { href: "/settings", label: "Config", icon: Settings },
 ];
 
 export function DesktopNav() {

@@ -129,6 +129,7 @@ export const trainingPlanWorkout = sqliteTable("training_plan_workout", {
   targetHrZone: text("target_hr_zone"),
   targetPace: text("target_pace"),
   targetRpe: integer("target_rpe"),
+  segments: text("segments"), // JSON: WorkoutSegment[]
   completed: integer("completed", { mode: "boolean" }).notNull().default(false),
   completedWorkoutId: integer("completed_workout_id"),
   sortOrder: integer("sort_order").notNull().default(0),

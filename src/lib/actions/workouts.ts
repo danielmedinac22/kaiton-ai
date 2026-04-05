@@ -49,7 +49,8 @@ export async function logWorkout(input: LogWorkoutInput) {
   }
 
   revalidatePath("/");
-  revalidatePath("/history");
+  revalidatePath("/workouts");
+  revalidatePath("/plan");
 
   return workout;
 }
@@ -57,5 +58,5 @@ export async function logWorkout(input: LogWorkoutInput) {
 export async function deleteWorkout(id: number) {
   await db.delete(workoutLog).where(eq(workoutLog.id, id));
   revalidatePath("/");
-  revalidatePath("/history");
+  revalidatePath("/workouts");
 }

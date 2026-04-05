@@ -53,7 +53,7 @@ export async function updateAthlete(
   }
 
   revalidatePath("/");
-  revalidatePath("/history");
+  revalidatePath("/settings");
 
   const [updated] = await db.select().from(athlete).limit(1);
   return updated;

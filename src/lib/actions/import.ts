@@ -81,7 +81,9 @@ export async function importAllData(exported: ExportedData) {
   }
 
   revalidatePath("/");
-  revalidatePath("/history");
+  revalidatePath("/workouts");
+  revalidatePath("/plan");
+  revalidatePath("/settings");
 
   return { ok: true };
 }

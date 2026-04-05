@@ -8,6 +8,7 @@ import { format, addDays, startOfWeek, differenceInCalendarDays, parseISO } from
 import { es } from "date-fns/locale";
 import Link from "next/link";
 import { Activity, Target, Flame, Calendar, ChevronRight, CheckCircle2 } from "lucide-react";
+import type { WorkoutSegment } from "@/lib/types";
 
 const TYPE_LABELS: Record<string, string> = {
   easy: "Easy Run", tempo: "Tempo", intervals: "Intervalos",
@@ -172,6 +173,34 @@ export default async function DashboardPage() {
                 {todayPlanned.description}
               </p>
             )}
+            {(() => {
+              const segments: WorkoutSegment[] = todayPlanned.segments
+                ? JSON.parse(todayPlanned.segments)
+                : [];
+              if (segments.length === 0) return null;
+              const zoneColors: Record<string, string> = {
+                Z1: "bg-[#5af0b3]/20 text-[#5af0b3]",
+                Z2: "bg-[#5af0b3]/30 text-[#5af0b3]",
+                Z3: "bg-[#f0d85a]/20 text-[#f0d85a]",
+                Z4: "bg-[#f0925a]/20 text-[#f0925a]",
+                Z5: "bg-[#f05a5a]/20 text-[#f05a5a]",
+              };
+              return (
+                <div className="space-y-1.5 pt-1">
+                  {segments.map((seg, i) => (
+                    <div key={i} className="flex items-center justify-between text-xs">
+                      <span className="text-[#bbcac0]">{seg.name}</span>
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-[#85948b]">{seg.durationMinutes} min</span>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${zoneColors[seg.zone] ?? "bg-[#293e31] text-[#bbcac0]"}`}>
+                          {seg.zone}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         ) : activePlan ? (
           <p className="text-sm text-[#85948b]">Dia de descanso.</p>
@@ -214,7 +243,7 @@ export default async function DashboardPage() {
               ))}
           </div>
           <Link
-            href="/history"
+            href="/plan"
             className="flex items-center gap-1 text-xs text-[#5af0b3] hover:underline"
           >
             Ver plan completo <ChevronRight className="h-3 w-3" />
