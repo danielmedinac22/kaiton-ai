@@ -155,7 +155,7 @@ export function createCoachTools() {
 
     generateTrainingPlan: tool({
       description:
-        "Generate a periodized training plan based on the athlete's goal, current fitness, and available time. This creates a full multi-week plan with daily workouts.",
+        "Generate a periodized training plan. IMPORTANT: Only call this AFTER you have asked the athlete about their preferences (available days, time constraints, schedule) and they have confirmed they want to proceed. Always call getRecentWorkouts and getCurrentPlanStatus first to assess current state.",
       inputSchema: z.object({
         startDate: z
           .string()
@@ -198,6 +198,13 @@ export function createCoachTools() {
                 targetDurationMinutes: z.number().nullable(),
                 targetHrZone: z.string().nullable(),
                 targetRpe: z.number().min(1).max(10).nullable(),
+                segments: z.array(
+                  z.object({
+                    name: z.string().describe("Segment name, e.g. Calentamiento, Tempo, Intervalos 800m, Vuelta calma"),
+                    zone: z.string().describe("Target HR zone, e.g. Z1, Z2, Z3, Z4, Z5"),
+                    durationMinutes: z.number().describe("Duration in minutes"),
+                  })
+                ).describe("Workout broken down into timed segments with target zone each"),
               })
             ),
           })
@@ -274,6 +281,7 @@ export function createCoachTools() {
               targetDurationMinutes: workout.targetDurationMinutes,
               targetHrZone: workout.targetHrZone,
               targetRpe: workout.targetRpe,
+              segments: JSON.stringify(workout.segments),
               sortOrder: workoutCount,
             });
             workoutCount++;
@@ -295,7 +303,7 @@ export function createCoachTools() {
 
     adjustPlan: tool({
       description:
-        "Modify specific upcoming workouts in the active training plan. Use this to adjust intensity, swap workout types, or add rest days.",
+        "Modify specific upcoming workouts in the active training plan. IMPORTANT: Only call this after discussing with the athlete what needs to change and why. First call getCurrentPlanStatus to see the current state, then propose changes and get confirmation before executing.",
       inputSchema: z.object({
         changes: z.array(
           z.object({

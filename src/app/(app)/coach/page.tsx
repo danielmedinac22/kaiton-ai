@@ -2,6 +2,7 @@
 
 import { Send, Bot, User, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { MarkdownMessage } from "@/components/coach/markdown-message";
 
 const quickActions = [
   "Genera mi plan de entrenamiento",
@@ -167,13 +168,19 @@ export default function CoachPage() {
                   </div>
                 )}
                 <div
-                  className={`rounded-2xl p-4 text-sm leading-relaxed ${
+                  className={`rounded-2xl p-4 ${
                     m.role === "assistant"
                       ? "bg-[#1a2e22] rounded-tl-none text-[#bbcac0]"
                       : "bg-[#293e31] rounded-tr-none text-[#d0e8d6]"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap">{m.text}</p>
+                  {m.role === "assistant" ? (
+                    <MarkdownMessage content={m.text} />
+                  ) : (
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                      {m.text}
+                    </p>
+                  )}
                 </div>
               </div>
               {m.role === "user" && (
