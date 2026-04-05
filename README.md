@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kaiton
 
-## Getting Started
+Your personal AI running coach. Open source, runs locally, no cloud needed.
 
-First, run the development server:
+Add your API key (OpenAI or Anthropic) and get a personalized training plan with periodized workouts, heart rate zones, and intelligent coaching.
+
+## Quick Start
 
 ```bash
+git clone https://github.com/yourusername/kaiton.git
+cd kaiton
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) and complete the setup wizard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **AI Coach** — Chat with an intelligent running coach that understands periodization, heart rate zones, and progressive overload
+- **Training Plans** — Auto-generated plans with Base, Build, Specific, and Taper phases
+- **Heart Rate Zones** — Karvonen formula calculation from your resting and max HR
+- **Workout Logging** — Track runs with distance, duration, RPE, and heart rate
+- **Multi-provider** — Works with OpenAI (GPT-4o) or Anthropic (Claude Sonnet)
+- **Local-first** — All data stored in SQLite on your machine. Nothing leaves your computer except AI API calls.
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
+- Next.js 16 + TypeScript
+- Tailwind CSS + shadcn/ui
+- SQLite (better-sqlite3) + Drizzle ORM
+- Vercel AI SDK 6 (OpenAI + Anthropic)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Requirements
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Node.js 18+
+- An API key from [OpenAI](https://platform.openai.com) or [Anthropic](https://console.anthropic.com)
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+  app/              # Pages and API routes
+    (app)/          # Main app (dashboard, coach, history)
+    onboarding/     # First-run setup wizard
+    api/chat/       # AI coach streaming endpoint
+  components/       # React components
+    ui/             # shadcn/ui base components
+    layout/         # Navigation (sidebar + bottom bar)
+  lib/
+    db/             # SQLite schema and connection
+    ai/             # Provider factory, system prompt, tools
+    training/       # Zone calculations, periodization
+data/               # Local SQLite database (gitignored)
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT

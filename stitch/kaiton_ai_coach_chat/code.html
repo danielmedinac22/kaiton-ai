@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Coach Kaiton - AI Running Coach</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#00563b",
+                        "inverse-primary": "#006c4b",
+                        "surface-bright": "#293e31",
+                        "on-secondary": "#003825",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#b8efd1",
+                        "on-secondary-container": "#8cc1a5",
+                        "surface-container-lowest": "#011208",
+                        "primary-container": "#34d399",
+                        "on-surface": "#d0e8d6",
+                        "on-error": "#690005",
+                        "surface-variant": "#25392d",
+                        "primary": "#5af0b3",
+                        "tertiary-fixed": "#ffdcc7",
+                        "on-primary-fixed": "#002114",
+                        "inverse-on-surface": "#213528",
+                        "on-background": "#d0e8d6",
+                        "outline-variant": "#3c4a42",
+                        "surface-dim": "#04170c",
+                        "surface-container-low": "#0b1f14",
+                        "primary-fixed": "#68fcbf",
+                        "on-primary": "#003825",
+                        "on-tertiary-container": "#783901",
+                        "background": "#04170c",
+                        "on-tertiary-fixed": "#311300",
+                        "on-secondary-fixed-variant": "#1c503a",
+                        "tertiary": "#ffccad",
+                        "on-secondary-fixed": "#002114",
+                        "surface-container-high": "#1a2e22",
+                        "tertiary-container": "#ffa668",
+                        "secondary-container": "#1c503a",
+                        "on-primary-fixed-variant": "#005137",
+                        "secondary-fixed-dim": "#9dd2b6",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#85948b",
+                        "surface-tint": "#45dfa4",
+                        "surface-container-highest": "#25392d",
+                        "primary-fixed-dim": "#45dfa4",
+                        "tertiary-fixed-dim": "#ffb787",
+                        "on-tertiary": "#502400",
+                        "on-surface-variant": "#bbcac0",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "secondary": "#9dd2b6",
+                        "error": "#ffb4ab",
+                        "surface": "#04170c",
+                        "inverse-surface": "#d0e8d6",
+                        "surface-container": "#102418"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #04170c;
+            color: #d0e8d6;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-header {
+            background: rgba(4, 23, 12, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 w-full z-50 bg-[#04170c]/70 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline font-bold text-lg tracking-tight text-primary">Coach Kaiton</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-medium">Tu entrenador personal de running con IA</span>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#1a2e22] transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="settings">settings</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-20 pb-40 px-4 max-w-3xl mx-auto w-full">
+<!-- Chat History -->
+<div class="space-y-8">
+<!-- Coach Initial Message -->
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-on-primary text-sm" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="bg-surface-container-high rounded-2xl rounded-tl-none p-4 max-w-[85%] text-on-surface text-sm leading-relaxed">
+                        ¡Hola! Soy tu coach de running. Puedo ayudarte a generar un plan de entrenamiento personalizado, analizar tus entrenamientos, calcular tus zonas de frecuencia cardíaca, y ajustar tu preparación. ¿Qué necesitas?
+                    </div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="flex flex-wrap gap-2 pl-11">
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-xs font-medium text-primary hover:bg-surface-container-high transition-all active:scale-95">Genera mi plan de entrenamiento</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-xs font-medium text-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95">Analiza mi última semana</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-xs font-medium text-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95">Calcula mis zonas de FC</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-xs font-medium text-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95">Ajusta el plan de esta semana</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-xs font-medium text-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95">¿Qué entreno hoy?</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-xs font-medium text-on-surface-variant hover:bg-surface-container-high transition-all active:scale-95">¿Cómo va mi preparación?</button>
+</div>
+<!-- User Message -->
+<div class="flex flex-col items-end gap-1">
+<div class="bg-surface-container-highest rounded-2xl rounded-tr-none p-4 max-w-[85%] text-on-surface text-sm">
+                    Genera mi plan de entrenamiento para la media maratón
+                </div>
+<span class="text-[10px] text-on-surface-variant mr-2">Visto</span>
+</div>
+<!-- Coach Multi-part Response -->
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-on-primary text-sm" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="flex flex-col gap-4 w-full">
+<!-- Status Badges -->
+<div class="flex gap-2">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary-container text-primary text-[11px] font-semibold border border-primary/20">
+<span class="material-symbols-outlined text-[14px] animate-spin" data-icon="progress_activity">progress_activity</span>
+                            Generando plan
+                        </div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant text-[11px] font-semibold border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Revisando entrenamientos
+                        </div>
+</div>
+<!-- Response Content Card -->
+<div class="bg-surface-container-high rounded-2xl rounded-tl-none p-6 w-full border border-outline-variant/10">
+<h3 class="font-headline font-bold text-primary mb-4">Resumen del Plan: Media Maratón (12 semanas)</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Metric 1 -->
+<div class="p-4 rounded-xl bg-surface-container-lowest">
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-medium block mb-1">Volumen Inicial</span>
+<span class="font-headline font-extrabold text-2xl text-on-surface">32 <span class="text-xs font-normal text-on-surface-variant">km/sem</span></span>
+</div>
+<!-- Metric 2 -->
+<div class="p-4 rounded-xl bg-surface-container-lowest">
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-medium block mb-1">Sesiones</span>
+<span class="font-headline font-extrabold text-2xl text-on-surface">4-5 <span class="text-xs font-normal text-on-surface-variant">días</span></span>
+</div>
+</div>
+<div class="mt-6 space-y-3">
+<p class="text-sm leading-relaxed text-on-surface-variant italic">
+                                "He analizado tus últimas 4 semanas de carga. Empezaremos con una fase de base aeróbica para fortalecer tus tendones antes de introducir series de umbral en la semana 4."
+                            </p>
+<button class="w-full mt-4 py-3 bg-gradient-to-br from-primary to-primary-container rounded-full text-on-primary font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all">
+                                Ver Plan Detallado
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Input Area (Task-Focused: Suppress navigation shell logic but floating above Nav) -->
+<div class="fixed bottom-20 left-0 right-0 px-4 pb-6 bg-gradient-to-t from-background via-background to-transparent pt-10">
+<div class="max-w-3xl mx-auto flex items-center gap-3 bg-surface-container-high p-2 rounded-2xl shadow-xl border border-outline-variant/10">
+<textarea class="flex-grow bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder:text-on-surface-variant py-2 px-3 resize-none" placeholder="Escribe un mensaje al coach..." rows="1"></textarea>
+<button class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center hover:opacity-90 active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="arrow_upward">arrow_upward</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-3xl bg-[#04170c]/70 backdrop-blur-xl shadow-[0_-4px_20px_rgba(69,223,164,0.05)] flex justify-around items-center h-20 px-4 pb-4">
+<!-- Panel -->
+<a class="flex flex-col items-center justify-center text-[#d0e8d6]/60 hover:text-[#5af0b3] transition-all" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest">Panel</span>
+</a>
+<!-- Coach (Active) -->
+<a class="flex flex-col items-center justify-center text-[#5af0b3] bg-[#102418] rounded-2xl px-5 py-2 active:scale-90 duration-150 transition-all" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="forum" style="font-variation-settings: 'FILL' 1;">forum</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest">Coach</span>
+</a>
+<!-- Historial -->
+<a class="flex flex-col items-center justify-center text-[#d0e8d6]/60 hover:text-[#5af0b3] transition-all" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="history">history</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest">Historial</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kaiton - Panel de Control</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#00563b",
+                        "inverse-primary": "#006c4b",
+                        "surface-bright": "#293e31",
+                        "on-secondary": "#003825",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#b8efd1",
+                        "on-secondary-container": "#8cc1a5",
+                        "surface-container-lowest": "#011208",
+                        "primary-container": "#34d399",
+                        "on-surface": "#d0e8d6",
+                        "on-error": "#690005",
+                        "surface-variant": "#25392d",
+                        "primary": "#5af0b3",
+                        "tertiary-fixed": "#ffdcc7",
+                        "on-primary-fixed": "#002114",
+                        "inverse-on-surface": "#213528",
+                        "on-background": "#d0e8d6",
+                        "outline-variant": "#3c4a42",
+                        "surface-dim": "#04170c",
+                        "surface-container-low": "#0b1f14",
+                        "primary-fixed": "#68fcbf",
+                        "on-primary": "#003825",
+                        "on-tertiary-container": "#783901",
+                        "background": "#04170c",
+                        "on-tertiary-fixed": "#311300",
+                        "on-secondary-fixed-variant": "#1c503a",
+                        "tertiary": "#ffccad",
+                        "on-secondary-fixed": "#002114",
+                        "surface-container-high": "#1a2e22",
+                        "tertiary-container": "#ffa668",
+                        "secondary-container": "#1c503a",
+                        "on-primary-fixed-variant": "#005137",
+                        "secondary-fixed-dim": "#9dd2b6",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#85948b",
+                        "surface-tint": "#45dfa4",
+                        "surface-container-highest": "#25392d",
+                        "primary-fixed-dim": "#45dfa4",
+                        "tertiary-fixed-dim": "#ffb787",
+                        "on-tertiary": "#502400",
+                        "on-surface-variant": "#bbcac0",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "secondary": "#9dd2b6",
+                        "error": "#ffb4ab",
+                        "surface": "#04170c",
+                        "inverse-surface": "#d0e8d6",
+                        "surface-container": "#102418"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #04170c;
+            color: #d0e8d6;
+        }
+        .editorial-gradient {
+            background: linear-gradient(135deg, #5af0b3 0%, #34d399 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#04170c]/70 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="text-[#5af0b3] font-extrabold tracking-tighter text-2xl font-headline">Kaiton</div>
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+<img alt="Perfil del Corredor" class="w-full h-full object-cover" data-alt="Close up portrait of a fit athletic man with a determined expression, natural lighting, high end athletic aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWi0jjJSIck9w4LZpdpnL6B6vFcuzEp4aVW4z-EmU9-6hQUXYUpdS7id5bbs3ZRH9Ick-ti_34l3xTCO6Q68VR6BXgkw8UBCBIpdo39SrqheV5PN2NOWtoiRkRIWsj4-qTAHHeBqrg25ZUmeyEoj8yDy5TvqKWdcJYZS_WYRNnm8W35Aknnjh1fTWTDmfhvfF78Pg-9Z57cRUcdAIqCrmBVXtpolY3KSBOEJRAhMJ6Gyhs0B_GFkGpTrdjfjChLSpLzB-EW2gsJVzF"/>
+</div>
+<button class="text-[#5af0b3] hover:bg-[#1a2e22] transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-20 px-6 max-w-7xl mx-auto space-y-10">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-1">
+<h1 class="text-on-background font-headline font-bold text-[22px] leading-tight">Hola, Daniel</h1>
+<p class="text-on-surface-variant font-body text-[13px]">164 días para tu carrera</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 rounded-full border border-primary/40 text-primary text-xs font-semibold tracking-wider uppercase">Specific phase</span>
+<button class="editorial-gradient text-on-primary font-bold px-4 py-2 rounded-full flex items-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="text-sm">Registrar</span>
+</button>
+</div>
+</section>
+<!-- Bento Stats Grid -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-surface-container-high p-5 rounded-3xl space-y-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">directions_run</span>
+</div>
+<div>
+<p class="text-on-surface-variant text-[11px] uppercase tracking-widest font-medium">Km semana</p>
+<p class="text-2xl font-headline font-extrabold text-on-background">42.5</p>
+</div>
+</div>
+<div class="bg-surface-container-high p-5 rounded-3xl space-y-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">flag</span>
+</div>
+<div>
+<p class="text-on-surface-variant text-[11px] uppercase tracking-widest font-medium">Meta</p>
+<p class="text-2xl font-headline font-extrabold text-on-background">Half Marathon</p>
+</div>
+</div>
+<div class="bg-surface-container-high p-5 rounded-3xl space-y-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<div>
+<p class="text-on-surface-variant text-[11px] uppercase tracking-widest font-medium">Racha</p>
+<p class="text-2xl font-headline font-extrabold text-on-background">12 días</p>
+</div>
+</div>
+<div class="bg-surface-container-high p-5 rounded-3xl space-y-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+<div>
+<p class="text-on-surface-variant text-[11px] uppercase tracking-widest font-medium">Total</p>
+<p class="text-2xl font-headline font-extrabold text-on-background">47</p>
+</div>
+</div>
+</section>
+<!-- Week Overview -->
+<section class="bg-surface-container p-6 rounded-[2rem]">
+<h2 class="text-on-surface-variant text-[11px] uppercase tracking-[0.2em] font-bold mb-6">Esta semana</h2>
+<div class="flex justify-between items-center max-w-2xl">
+<div class="flex flex-col items-center gap-3">
+<span class="text-xs font-medium text-on-surface-variant">Lun</span>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[20px] font-bold">check</span>
+</div>
+</div>
+<div class="flex flex-col items-center gap-3">
+<span class="text-xs font-medium text-on-surface-variant">Mar</span>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[20px] font-bold">check</span>
+</div>
+</div>
+<div class="flex flex-col items-center gap-3">
+<span class="text-xs font-medium text-on-surface-variant">Mie</span>
+<div class="w-8 h-8 rounded-full border-2 border-primary ring-4 ring-primary/10 flex items-center justify-center">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-3">
+<span class="text-xs font-medium text-on-surface-variant">Jue</span>
+<div class="w-8 h-8 rounded-full border-2 border-outline-variant"></div>
+</div>
+<div class="flex flex-col items-center gap-3">
+<span class="text-xs font-medium text-on-surface-variant">Vie</span>
+<div class="w-8 h-8 rounded-full border-2 border-outline-variant"></div>
+</div>
+<div class="flex flex-col items-center gap-3">
+<span class="text-xs font-medium text-on-surface-variant">Sab</span>
+<div class="w-8 h-8 rounded-full border-2 border-outline-variant"></div>
+</div>
+<div class="flex flex-col items-center gap-3">
+<span class="text-xs font-medium text-on-surface-variant">Dom</span>
+<div class="w-8 h-8 rounded-full border-2 border-outline-variant"></div>
+</div>
+</div>
+</section>
+<!-- Today's Workout Card -->
+<section class="relative overflow-hidden bg-surface-container-high p-8 rounded-[2rem] group transition-all">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+<div class="relative z-10">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+<div class="space-y-4 max-w-xl">
+<h2 class="text-tertiary text-[11px] uppercase tracking-[0.2em] font-bold">Entrenamiento de hoy</h2>
+<div>
+<h3 class="text-2xl font-headline font-bold text-on-background mb-1">Tempo 4x2km</h3>
+<p class="text-on-surface-variant font-medium flex items-center gap-3 flex-wrap">
+<span>Tempo</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>12 km</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>Z3-Z4</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>RPE 7</span>
+</p>
+</div>
+<p class="text-on-surface-variant/80 text-sm leading-relaxed">
+                            Calentamiento 2km Z1-Z2. 4 repeticiones de 2km en zona 3-4 con 400m recuperación. Vuelta a la calma 1.5km.
+                        </p>
+</div>
+<button class="border-2 border-primary text-primary px-8 py-3 rounded-full font-bold hover:bg-primary/10 transition-all active:scale-95 shrink-0">
+                        Registrar
+                    </button>
+</div>
+</div>
+</section>
+<!-- Upcoming Workouts -->
+<section class="space-y-6 pb-8">
+<div class="flex justify-between items-center">
+<h2 class="text-on-surface-variant text-[11px] uppercase tracking-[0.2em] font-bold">Próximos entrenamientos</h2>
+<a class="text-primary text-sm font-semibold flex items-center gap-1 hover:underline" href="#">Ver plan completo →</a>
+</div>
+<div class="space-y-3">
+<!-- Workout Row -->
+<div class="bg-surface-container-low hover:bg-surface-container flex items-center justify-between p-5 rounded-2xl transition-colors">
+<div class="flex items-center gap-6">
+<div class="text-center w-12">
+<p class="text-[10px] uppercase text-on-surface-variant font-bold">Jue</p>
+<p class="text-lg font-headline font-bold">14</p>
+</div>
+<div>
+<p class="font-bold text-on-background">Easy Run</p>
+<p class="text-xs text-on-surface-variant">Zona 2 recuperación</p>
+</div>
+</div>
+<div class="flex items-center gap-8 text-right">
+<div>
+<p class="text-xs text-on-surface-variant mb-0.5">Distancia</p>
+<p class="font-bold">8 km</p>
+</div>
+<div class="w-12">
+<p class="text-xs text-on-surface-variant mb-0.5">RPE</p>
+<p class="font-bold">4</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low hover:bg-surface-container flex items-center justify-between p-5 rounded-2xl transition-colors">
+<div class="flex items-center gap-6">
+<div class="text-center w-12">
+<p class="text-[10px] uppercase text-on-surface-variant font-bold">Vie</p>
+<p class="text-lg font-headline font-bold">15</p>
+</div>
+<div>
+<p class="font-bold text-on-background">Intervalos 6x800m</p>
+<p class="text-xs text-on-surface-variant">Velocidad en pista</p>
+</div>
+</div>
+<div class="flex items-center gap-8 text-right">
+<div>
+<p class="text-xs text-on-surface-variant mb-0.5">Distancia</p>
+<p class="font-bold">10 km</p>
+</div>
+<div class="w-12">
+<p class="text-xs text-on-surface-variant mb-0.5">RPE</p>
+<p class="font-bold">9</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low hover:bg-surface-container flex items-center justify-between p-5 rounded-2xl transition-colors">
+<div class="flex items-center gap-6">
+<div class="text-center w-12">
+<p class="text-[10px] uppercase text-on-surface-variant font-bold">Sab</p>
+<p class="text-lg font-headline font-bold">16</p>
+</div>
+<div>
+<p class="font-bold text-on-background">Rest Day</p>
+<p class="text-xs text-tertiary">Recuperación activa</p>
+</div>
+</div>
+<div class="flex items-center gap-8 text-right">
+<div>
+<p class="text-xs text-on-surface-variant mb-0.5">Distancia</p>
+<p class="font-bold">-</p>
+</div>
+<div class="w-12">
+<p class="text-xs text-on-surface-variant mb-0.5">RPE</p>
+<p class="font-bold">1</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low hover:bg-surface-container flex items-center justify-between p-5 rounded-2xl transition-colors">
+<div class="flex items-center gap-6">
+<div class="text-center w-12">
+<p class="text-[10px] uppercase text-on-surface-variant font-bold">Dom</p>
+<p class="text-lg font-headline font-bold">17</p>
+</div>
+<div>
+<p class="font-bold text-on-background">Long Run</p>
+<p class="text-xs text-on-surface-variant">Resistencia base</p>
+</div>
+</div>
+<div class="flex items-center gap-8 text-right">
+<div>
+<p class="text-xs text-on-surface-variant mb-0.5">Distancia</p>
+<p class="font-bold">22 km</p>
+</div>
+<div class="w-12">
+<p class="text-xs text-on-surface-variant mb-0.5">RPE</p>
+<p class="font-bold">6</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 bg-[#04170c]/70 backdrop-blur-xl rounded-t-3xl shadow-[0_-4px_20px_rgba(69,223,164,0.05)]">
+<div class="flex justify-around items-center h-20 px-4 pb-4 max-w-md mx-auto">
+<!-- Active State -->
+<a class="flex flex-col items-center justify-center text-[#5af0b3] bg-[#102418] rounded-2xl px-5 py-2" href="#">
+<span class="material-symbols-outlined active-icon">dashboard</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Panel</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#d0e8d6]/60 hover:text-[#5af0b3] transition-all" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Coach</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#d0e8d6]/60 hover:text-[#5af0b3] transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Historial</span>
+</a>
+</div>
+</nav>
+</body></html>

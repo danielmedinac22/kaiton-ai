@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kaiton - Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#00563b",
+                        "inverse-primary": "#006c4b",
+                        "surface-bright": "#293e31",
+                        "on-secondary": "#003825",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#b8efd1",
+                        "on-secondary-container": "#8cc1a5",
+                        "surface-container-lowest": "#011208",
+                        "primary-container": "#34d399",
+                        "on-surface": "#d0e8d6",
+                        "on-error": "#690005",
+                        "surface-variant": "#25392d",
+                        "primary": "#5af0b3",
+                        "tertiary-fixed": "#ffdcc7",
+                        "on-primary-fixed": "#002114",
+                        "inverse-on-surface": "#213528",
+                        "on-background": "#d0e8d6",
+                        "outline-variant": "#3c4a42",
+                        "surface-dim": "#04170c",
+                        "surface-container-low": "#0b1f14",
+                        "primary-fixed": "#68fcbf",
+                        "on-primary": "#003825",
+                        "on-tertiary-container": "#783901",
+                        "background": "#04170c",
+                        "on-tertiary-fixed": "#311300",
+                        "on-secondary-fixed-variant": "#1c503a",
+                        "tertiary": "#ffccad",
+                        "on-secondary-fixed": "#002114",
+                        "surface-container-high": "#1a2e22",
+                        "tertiary-container": "#ffa668",
+                        "secondary-container": "#1c503a",
+                        "on-primary-fixed-variant": "#005137",
+                        "secondary-fixed-dim": "#9dd2b6",
+                        "on-error-container": "#ffdad6",
+                        "outline": "#85948b",
+                        "surface-tint": "#45dfa4",
+                        "surface-container-highest": "#25392d",
+                        "primary-fixed-dim": "#45dfa4",
+                        "tertiary-fixed-dim": "#ffb787",
+                        "on-tertiary": "#502400",
+                        "on-surface-variant": "#bbcac0",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "secondary": "#9dd2b6",
+                        "error": "#ffb4ab",
+                        "surface": "#04170c",
+                        "inverse-surface": "#d0e8d6",
+                        "surface-container": "#102418"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #1a2e22;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            background: rgba(41, 62, 49, 0.4);
+            backdrop-filter: blur(20px);
+        }
+        .gradient-primary {
+            background: linear-gradient(135deg, #5af0b3 0%, #34d399 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface min-h-screen flex flex-col items-center py-12 px-6">
+<!-- App Identity -->
+<header class="flex flex-col items-center mb-10">
+<div class="w-16 h-16 gradient-primary rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-[#5af0b3]/20">
+<span class="text-on-primary font-headline font-extrabold text-3xl">K</span>
+</div>
+<h1 class="font-headline font-extrabold text-2xl text-on-surface tracking-tighter">Kaiton</h1>
+</header>
+<!-- Progress Indicator -->
+<nav aria-label="Progreso de registro" class="flex gap-2 mb-12 w-full max-w-sm justify-center">
+<div class="h-1.5 w-12 gradient-primary rounded-full"></div>
+<div class="h-1.5 w-12 bg-surface-container-highest rounded-full"></div>
+<div class="h-1.5 w-12 bg-surface-container-highest rounded-full"></div>
+<div class="h-1.5 w-12 bg-surface-container-highest rounded-full"></div>
+</nav>
+<!-- Main Content Card -->
+<main class="w-full max-w-md bg-[#1f3a2a] rounded-[16px] p-8 shadow-2xl relative overflow-hidden">
+<!-- Subtle Ambient Glow -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-[80px] rounded-full"></div>
+<header class="mb-8">
+<h2 class="font-headline font-bold text-[18px] text-on-background mb-2">Bienvenido a Kaiton</h2>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed">
+                Tu entrenador personal de running con IA. Configura tu perfil en unos pocos pasos.
+            </p>
+</header>
+<section class="space-y-6">
+<!-- Name Input -->
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs font-medium text-on-surface-variant uppercase tracking-wider" for="name">Nombre</label>
+<input class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/15 focus:ring-primary/40 rounded-lg py-3 px-4 text-on-surface placeholder:text-outline text-sm transition-all outline-none" id="name" placeholder="Tu nombre" type="text"/>
+</div>
+<!-- Language Dropdown -->
+<div class="flex flex-col gap-2">
+<label class="font-label text-xs font-medium text-on-surface-variant uppercase tracking-wider" for="language">Idioma</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/15 focus:ring-primary/40 rounded-lg py-3 px-4 text-on-surface text-sm appearance-none cursor-pointer" id="language">
+<option value="es">Español</option>
+<option value="en">English</option>
+<option value="fr">Français</option>
+</select>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Navigation Actions -->
+<footer class="flex items-center justify-between mt-12">
+<button class="font-body text-sm font-semibold text-on-surface-variant/40 hover:text-on-surface-variant transition-colors py-2 px-4">
+                Atrás
+            </button>
+<button class="gradient-primary text-on-primary font-body font-bold text-sm py-3 px-6 rounded-full flex items-center gap-2 shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all">
+                Siguiente
+                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</footer>
+</main>
+<!-- Visual Polish Decoration -->
+<div class="mt-16 opacity-30">
+<div class="h-[200px] w-[200px] rounded-full border border-primary/20 flex items-center justify-center">
+<div class="h-[120px] w-[120px] rounded-full border border-primary/10"></div>
+</div>
+</div>
+</body></html>
