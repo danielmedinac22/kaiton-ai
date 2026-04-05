@@ -1,4 +1,4 @@
-import { streamText, convertToModelMessages, type UIMessage } from "ai";
+import { generateText, stepCountIs } from "ai";
 import { db } from "@/lib/db";
 import {
   athlete,
@@ -6,31 +6,35 @@ import {
   workoutLog,
   trainingPlan,
   trainingPlanWorkout,
+  chatHistory,
 } from "@/lib/db/schema";
 import { desc, eq, gte } from "drizzle-orm";
 import { getAIModel } from "@/lib/ai/provider";
 import { buildSystemPrompt } from "@/lib/ai/system-prompt";
 import { createCoachTools } from "@/lib/ai/tools";
 import { format, addDays, differenceInWeeks, parseISO } from "date-fns";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const messages: UIMessage[] = body.messages ?? [];
+    const userMessage: string = body.message ?? "";
 
-    // Load athlete context
-    const [athleteData] = await db.select().from(athlete).limit(1);
-    if (!athleteData) {
-      return new Response("No athlete profile found", { status: 400 });
+    if (!userMessage.trim()) {
+      return NextResponse.json({ error: "Mensaje vacio" }, { status: 400 });
     }
 
-    // Load zones
+    const [athleteData] = await db.select().from(athlete).limit(1);
+    if (!athleteData) {
+      return NextResponse.json({ error: "No hay perfil" }, { status: 400 });
+    }
+
+    // Load context
     const zones = await db
       .select()
       .from(hrZones)
       .where(eq(hrZones.athleteId, athleteData.id));
 
-    // Load recent workouts (14 days)
     const since = format(addDays(new Date(), -14), "yyyy-MM-dd");
     const recentWorkouts = await db
       .select()
@@ -38,7 +42,6 @@ export async function POST(request: Request) {
       .where(gte(workoutLog.date, since))
       .orderBy(desc(workoutLog.date));
 
-    // Load active plan status
     let activePlan: {
       name: string;
       totalWeeks: number;
@@ -64,13 +67,11 @@ export async function POST(request: Request) {
         differenceInWeeks(new Date(), parseISO(plan.startDate)) + 1,
         plan.totalWeeks
       );
-
       const phases: { phase: string; startWeek: number; endWeek: number }[] =
         JSON.parse(plan.phaseStructure);
       const currentPhase =
-        phases.find(
-          (p) => currentWeek >= p.startWeek && currentWeek <= p.endWeek
-        )?.phase ?? "base";
+        phases.find((p) => currentWeek >= p.startWeek && currentWeek <= p.endWeek)
+          ?.phase ?? "base";
 
       activePlan = {
         name: plan.name,
@@ -119,27 +120,64 @@ export async function POST(request: Request) {
       athleteData.aiModel
     );
 
-    const tools = createCoachTools();
+    // Load recent chat history for context
+    const history = await db
+      .select()
+      .from(chatHistory)
+      .orderBy(desc(chatHistory.createdAt))
+      .limit(20);
 
-    // Convert UI messages to model messages
-    const modelMessages = await convertToModelMessages(messages, {
-      tools,
-      ignoreIncompleteToolCalls: true,
+    const historyMessages = history
+      .reverse()
+      .map((h) => ({
+        role: h.role as "user" | "assistant",
+        content: h.content,
+      }));
+
+    // Build messages: history + new user message
+    const allMessages = [
+      ...historyMessages,
+      { role: "user" as const, content: userMessage },
+    ];
+
+    // Save user message to history
+    await db.insert(chatHistory).values({
+      role: "user",
+      content: userMessage,
+      createdAt: new Date().toISOString(),
     });
 
-    const result = streamText({
+    // Generate with multi-step tool use
+    const tools = createCoachTools();
+    const result = await generateText({
       model,
       system: systemPrompt,
-      messages: modelMessages,
+      messages: allMessages,
       tools,
+      stopWhen: stepCountIs(5),
     });
 
-    return result.toUIMessageStreamResponse();
+    const responseText = result.text || "No pude generar una respuesta.";
+
+    // Save assistant response to history
+    await db.insert(chatHistory).values({
+      role: "assistant",
+      content: responseText,
+      createdAt: new Date().toISOString(),
+    });
+
+    // Report which tools were used
+    const toolsUsed = result.steps
+      ?.flatMap((s: { toolCalls?: { toolName: string }[] }) => s.toolCalls?.map((tc) => tc.toolName) ?? [])
+      ?? [];
+
+    return NextResponse.json({
+      text: responseText,
+      toolsUsed: [...new Set(toolsUsed)],
+    });
   } catch (error) {
-    console.error("Chat route error:", error);
-    return new Response(
-      JSON.stringify({ error: "Error en el chat" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    console.error("Chat error:", error);
+    const message = error instanceof Error ? error.message : "Error desconocido";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
