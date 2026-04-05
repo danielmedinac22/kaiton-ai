@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { Send, Bot, User, Loader2, Wrench } from "lucide-react";
+import { Send, Bot, User, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 const quickActions = [
@@ -13,14 +13,6 @@ const quickActions = [
   "Como va mi preparacion?",
 ];
 
-const TOOL_LABELS: Record<string, string> = {
-  getRecentWorkouts: "Revisando entrenamientos",
-  getCurrentPlanStatus: "Revisando plan",
-  calculateHRZones: "Calculando zonas",
-  generateTrainingPlan: "Generando plan",
-  adjustPlan: "Ajustando plan",
-};
-
 export default function CoachPage() {
   const { messages, sendMessage, status } = useChat();
   const [input, setInput] = useState("");
@@ -31,7 +23,7 @@ export default function CoachPage() {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, status]);
 
   const handleSend = () => {
     const text = input.trim();
@@ -45,6 +37,24 @@ export default function CoachPage() {
       e.preventDefault();
       handleSend();
     }
+  };
+
+  // Extract text from a message — try parts first, fall back to content
+  const getMessageText = (m: (typeof messages)[number]): string => {
+    if (!m.parts || m.parts.length === 0) return "";
+    const texts: string[] = [];
+    for (const p of m.parts) {
+      if (p.type === "text" && "text" in p) {
+        texts.push((p as { type: "text"; text: string }).text);
+      }
+    }
+    return texts.join("");
+  };
+
+  // Check if message has active tool calls
+  const hasToolCalls = (m: (typeof messages)[number]): boolean => {
+    if (!m.parts) return false;
+    return m.parts.some((p) => p.type.startsWith("tool-"));
   };
 
   return (
@@ -67,9 +77,8 @@ export default function CoachPage() {
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 md:px-6 py-6">
         <div className="max-w-2xl mx-auto space-y-5">
-          {messages.length === 0 && (
+          {messages.length === 0 && !isLoading && (
             <>
-              {/* Welcome */}
               <div className="flex gap-3">
                 <div className="h-8 w-8 rounded-full bg-[#102418] flex items-center justify-center shrink-0 mt-1">
                   <Bot className="h-4 w-4 text-[#5af0b3]" strokeWidth={1.5} />
@@ -84,7 +93,6 @@ export default function CoachPage() {
                 </div>
               </div>
 
-              {/* Quick Actions */}
               <div className="flex flex-wrap gap-2 pl-11">
                 {quickActions.map((action) => (
                   <button
@@ -100,24 +108,12 @@ export default function CoachPage() {
           )}
 
           {messages.map((m) => {
-            const textParts: string[] = [];
-            const toolParts: { name: string; state: string }[] = [];
-
-            if (m.parts) {
-              for (const p of m.parts) {
-                if (p.type === "text" && "text" in p) {
-                  textParts.push((p as { type: "text"; text: string }).text);
-                } else if (p.type.startsWith("tool-")) {
-                  const part = p as { type: string; state: string };
-                  toolParts.push({ name: p.type.replace("tool-", ""), state: part.state });
-                }
-              }
-            }
-
-            const textContent = textParts.join("");
-            if (!textContent && toolParts.length === 0) return null;
-
+            const text = getMessageText(m);
             const isAssistant = m.role === "assistant";
+            const toolActive = hasToolCalls(m);
+
+            // Skip empty messages unless they have tool calls
+            if (!text && !toolActive) return null;
 
             return (
               <div key={m.id} className={`flex gap-3 ${isAssistant ? "" : "justify-end"}`}>
@@ -127,26 +123,15 @@ export default function CoachPage() {
                   </div>
                 )}
                 <div className={`space-y-2 max-w-[85%] ${isAssistant ? "" : "flex flex-col items-end"}`}>
-                  {/* Tool badges */}
-                  {toolParts.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {toolParts.map((t, i) => (
-                        <span
-                          key={i}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1c503a] text-[10px] font-bold uppercase tracking-wider text-[#5af0b3]"
-                        >
-                          {t.state === "call" || t.state === "partial-call" || t.state === "input-streaming" ? (
-                            <Loader2 className="h-3 w-3 animate-spin" />
-                          ) : (
-                            <Wrench className="h-3 w-3" />
-                          )}
-                          {TOOL_LABELS[t.name] ?? t.name}
-                        </span>
-                      ))}
+                  {/* Tool indicator */}
+                  {toolActive && !text && (
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1c503a] text-[10px] font-bold uppercase tracking-wider text-[#5af0b3]">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Procesando...
                     </div>
                   )}
-                  {/* Text */}
-                  {textContent && (
+                  {/* Text bubble */}
+                  {text && (
                     <div
                       className={`rounded-2xl p-4 text-sm leading-relaxed ${
                         isAssistant
@@ -154,7 +139,7 @@ export default function CoachPage() {
                           : "bg-[#293e31] rounded-tr-none text-[#d0e8d6]"
                       }`}
                     >
-                      <p className="whitespace-pre-wrap">{textContent}</p>
+                      <p className="whitespace-pre-wrap">{text}</p>
                     </div>
                   )}
                 </div>
@@ -167,6 +152,7 @@ export default function CoachPage() {
             );
           })}
 
+          {/* Loading indicator */}
           {isLoading && (messages.length === 0 || messages[messages.length - 1]?.role === "user") && (
             <div className="flex gap-3">
               <div className="h-8 w-8 rounded-full bg-[#102418] flex items-center justify-center shrink-0 mt-1">
