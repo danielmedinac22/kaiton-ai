@@ -6,12 +6,16 @@ const STRAVA_AUTH_URL = "https://www.strava.com/oauth/authorize";
 const STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token";
 const STRAVA_API_URL = "https://www.strava.com/api/v3";
 
-/** Get Strava credentials from env vars (primary) or DB (fallback) */
+// Default Strava app credentials — shared community app, no sensitive data
+const DEFAULT_STRAVA_CLIENT_ID = "200666";
+const DEFAULT_STRAVA_CLIENT_SECRET = "8fc2a2fdc78b3b786b53c1edaf1c0dd1ea44a286";
+
+/** Get Strava credentials: env vars > DB > built-in defaults */
 export async function getStravaCredentials(): Promise<{
   clientId: string;
   clientSecret: string;
-} | null> {
-  // Env vars take priority
+}> {
+  // Env vars take priority (for users who want their own app)
   if (process.env.STRAVA_CLIENT_ID && process.env.STRAVA_CLIENT_SECRET) {
     return {
       clientId: process.env.STRAVA_CLIENT_ID,
@@ -19,13 +23,17 @@ export async function getStravaCredentials(): Promise<{
     };
   }
 
-  // Fallback to DB
+  // DB values (legacy support)
   const [a] = await db.select().from(athlete).limit(1);
   if (a?.stravaClientId && a?.stravaClientSecret) {
     return { clientId: a.stravaClientId, clientSecret: a.stravaClientSecret };
   }
 
-  return null;
+  // Built-in defaults — works out of the box
+  return {
+    clientId: DEFAULT_STRAVA_CLIENT_ID,
+    clientSecret: DEFAULT_STRAVA_CLIENT_SECRET,
+  };
 }
 
 export function getStravaAuthUrl(clientId: string, redirectUri: string) {

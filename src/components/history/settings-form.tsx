@@ -47,8 +47,6 @@ export function SettingsForm({ athleteData, zones }: { athleteData: AthleteData;
     aiApiKey: athleteData.aiApiKey,
     aiModel: athleteData.aiModel,
     language: athleteData.language,
-    stravaClientId: athleteData.stravaClientId ?? "",
-    stravaClientSecret: athleteData.stravaClientSecret ?? "",
   });
 
   const update = (key: string, value: string) => setForm((f) => ({ ...f, [key]: value }));
@@ -71,8 +69,6 @@ export function SettingsForm({ athleteData, zones }: { athleteData: AthleteData;
         aiApiKey: form.aiApiKey,
         aiModel: form.aiModel,
         language: form.language,
-        stravaClientId: form.stravaClientId || undefined,
-        stravaClientSecret: form.stravaClientSecret || undefined,
       });
       setSaved(true);
       router.refresh();
@@ -238,41 +234,17 @@ export function SettingsForm({ athleteData, zones }: { athleteData: AthleteData;
         ) : (
           <div className="space-y-3">
             <p className="text-[11px] text-[#85948b]">
-              Crea tu app en strava.com/settings/api. Usa http://localhost:3000/api/strava/callback como redirect URI.
+              Conecta tu cuenta de Strava para importar tus entrenamientos automaticamente.
             </p>
-            <div className="space-y-1.5">
-              <label className={labelClass}>Client ID</label>
-              <input
-                value={form.stravaClientId}
-                onChange={(e) => update("stravaClientId", e.target.value)}
-                placeholder="12345"
-                className={inputClass}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className={labelClass}>Client Secret</label>
-              <input
-                type="password"
-                value={form.stravaClientSecret}
-                onChange={(e) => update("stravaClientSecret", e.target.value)}
-                placeholder="abc123..."
-                className={inputClass}
-              />
-            </div>
-            {form.stravaClientId && form.stravaClientSecret && (
-              <button
-                onClick={() => {
-                  // Save first, then redirect to OAuth
-                  handleSave().then(() => {
-                    window.location.href = "/api/strava/authorize";
-                  });
-                }}
-                className="px-4 py-2 rounded-full border border-[#5af0b3]/40 text-[#5af0b3] text-xs font-semibold hover:bg-[#5af0b3]/10 active:scale-95 transition-all flex items-center gap-1.5"
-              >
-                <LinkIcon className="h-3.5 w-3.5" />
-                Conectar Strava
-              </button>
-            )}
+            <button
+              onClick={() => {
+                window.location.href = "/api/strava/authorize";
+              }}
+              className="px-4 py-2 rounded-full border border-[#5af0b3]/40 text-[#5af0b3] text-xs font-semibold hover:bg-[#5af0b3]/10 active:scale-95 transition-all flex items-center gap-1.5"
+            >
+              <LinkIcon className="h-3.5 w-3.5" />
+              Conectar Strava
+            </button>
           </div>
         )}
       </div>

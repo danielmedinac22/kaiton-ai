@@ -34,8 +34,6 @@ type FormData = {
   aiProvider: "openai" | "anthropic";
   aiApiKey: string;
   aiModel: string;
-  stravaClientId: string;
-  stravaClientSecret: string;
 };
 
 export default function OnboardingPage() {
@@ -58,8 +56,6 @@ export default function OnboardingPage() {
     aiProvider: "openai",
     aiApiKey: "",
     aiModel: "gpt-5.4-mini",
-    stravaClientId: "",
-    stravaClientSecret: "",
   });
 
   const update = (key: keyof FormData, value: string) =>
@@ -259,37 +255,6 @@ export default function OnboardingPage() {
               <p className="text-[11px] text-[#85948b]">
                 Si no conoces tu FC Max, la estimaremos con 220 - edad
               </p>
-            </div>
-
-            {/* Strava optional */}
-            <div className="pt-3 border-t border-[#3c4a42]/30 space-y-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#85948b]">
-                Strava (opcional)
-              </p>
-              <p className="text-[11px] text-[#85948b]">
-                Crea tu app en strava.com/settings/api para importar entrenamientos.
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className={labelClass}>Client ID</label>
-                  <input
-                    value={form.stravaClientId}
-                    onChange={(e) => update("stravaClientId", e.target.value)}
-                    placeholder="12345"
-                    className={inputClass}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className={labelClass}>Client Secret</label>
-                  <input
-                    type="password"
-                    value={form.stravaClientSecret}
-                    onChange={(e) => update("stravaClientSecret", e.target.value)}
-                    placeholder="abc..."
-                    className={inputClass}
-                  />
-                </div>
-              </div>
             </div>
           </div>
         )}
