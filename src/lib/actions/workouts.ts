@@ -56,7 +56,18 @@ export async function logWorkout(input: LogWorkoutInput) {
 }
 
 export async function deleteWorkout(id: number) {
+  const [workout] = await db.select().from(workoutLog).where(eq(workoutLog.id, id)).limit(1);
+
+  if (workout?.plannedWorkoutId) {
+    await db
+      .update(trainingPlanWorkout)
+      .set({ completed: false, completedWorkoutId: null })
+      .where(eq(trainingPlanWorkout.id, workout.plannedWorkoutId));
+  }
+
   await db.delete(workoutLog).where(eq(workoutLog.id, id));
   revalidatePath("/");
   revalidatePath("/workouts");
+  revalidatePath("/plan");
+  revalidatePath("/strava");
 }

@@ -82,6 +82,8 @@
   --outline-color: #85948b;
   --outline-variant: #3c4a42;
   --tertiary: #ffccad;
+  --accent-warm: #ffccad;
+  --accent-warm-muted: #3d2800;
 
   /* shadcn mappings */
   --card: #1a2e22;
@@ -134,6 +136,8 @@
   --outline-color: #85948b;
   --outline-variant: #3c4a42;
   --tertiary: #ffccad;
+  --accent-warm: #ffccad;
+  --accent-warm-muted: #3d2800;
   --card: #1a2e22;
   --card-foreground: #d0e8d6;
   --popover: #1a2e22;
@@ -191,7 +195,17 @@
   -webkit-backdrop-filter: blur(20px);
 }
 
+/* Warm gradient button */
+.btn-gradient-warm {
+  background: linear-gradient(135deg, #ffccad 0%, #f0d85a 100%);
+  color: #3d2800;
+}
+
 /* Ambient glow */
 .glow-primary {
   box-shadow: 0 0 20px rgba(90, 240, 179, 0.15);
+}
+
+.glow-warm {
+  box-shadow: 0 0 20px rgba(255, 204, 173, 0.12);
 }

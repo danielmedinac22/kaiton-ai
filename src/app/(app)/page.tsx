@@ -2,12 +2,14 @@ export const dynamic = "force-dynamic";
 
 import { db } from "@/lib/db";
 import { athlete, workoutLog, trainingPlan, trainingPlanWorkout } from "@/lib/db/schema";
-import { WorkoutForm } from "@/components/history/workout-form";
+import { WorkoutForm, type LatestStravaActivity } from "@/components/history/workout-form";
+import { getValidStravaToken, getStravaActivities, metersPerSecToPace } from "@/lib/strava";
 import { eq, gte, desc } from "drizzle-orm";
 import { format, addDays, startOfWeek, differenceInCalendarDays, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
 import { Activity, Target, Flame, Calendar, ChevronRight, CheckCircle2 } from "lucide-react";
+import { estimatePacePerZone } from "@/lib/training/pace-zones";
 import type { WorkoutSegment } from "@/lib/types";
 
 const TYPE_LABELS: Record<string, string> = {
@@ -51,6 +53,47 @@ export default async function DashboardPage() {
       .orderBy(trainingPlanWorkout.date).limit(6);
   }
 
+  const paceZones = estimatePacePerZone({
+    pr5k: a.pr5k,
+    pr10k: a.pr10k,
+    prHalf: a.prHalf,
+    prMarathon: a.prMarathon,
+    goalRaceTime: a.goalRaceTime,
+    goalRaceDistance: a.goalRaceDistance,
+  });
+
+  // Fetch latest unimported Strava activity
+  let latestStrava: LatestStravaActivity | null = null;
+  try {
+    const token = await getValidStravaToken();
+    if (token) {
+      const activities = await getStravaActivities(token, 1, 1);
+      if (activities.length > 0) {
+        const act = activities[0];
+        const importedIds = new Set(
+          (await db.select({ sid: workoutLog.stravaActivityId }).from(workoutLog))
+            .map((w) => w.sid)
+            .filter((id): id is string => id !== null)
+        );
+        if (!importedIds.has(act.id.toString())) {
+          latestStrava = {
+            id: act.id,
+            name: act.name,
+            distanceKm: Math.round((act.distance / 1000) * 100) / 100,
+            durationMinutes: Math.round(act.moving_time / 60),
+            date: act.start_date_local.split("T")[0],
+            pace: metersPerSecToPace(act.average_speed),
+            avgHr: act.average_heartrate ? Math.round(act.average_heartrate) : null,
+            maxHr: act.max_heartrate ? Math.round(act.max_heartrate) : null,
+            type: act.type,
+          };
+        }
+      }
+    }
+  } catch {
+    // Strava fetch failed — just skip the quick import
+  }
+
   const daysUntilRace = a.goalRaceDate
     ? differenceInCalendarDays(parseISO(a.goalRaceDate), new Date()) : null;
 
@@ -87,21 +130,21 @@ export default async function DashboardPage() {
               {currentPhase}
             </span>
           )}
-          <WorkoutForm />
+          <WorkoutForm latestStrava={latestStrava} />
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4">
         {[
-          { icon: Activity, label: "KM SEMANA", value: weeklyKm.toFixed(1), sub: "km" },
-          { icon: Target, label: "META", value: a.goalRaceDistance?.replace("_", " ") ?? "-", sub: "" },
-          { icon: Flame, label: "RACHA", value: `${streak}`, sub: "dias" },
-          { icon: Calendar, label: "TOTAL", value: `${allWorkouts.length}`, sub: "" },
+          { icon: Activity, label: "KM SEMANA", value: weeklyKm.toFixed(1), sub: "km", color: "text-[#5af0b3]", bg: "bg-[#102418]" },
+          { icon: Target, label: "META", value: a.goalRaceDistance?.replace("_", " ") ?? "-", sub: "", color: "text-[#ffccad]", bg: "bg-[#2a2010]" },
+          { icon: Flame, label: "RACHA", value: `${streak}`, sub: "dias", color: "text-[#f0d85a]", bg: "bg-[#2a2510]" },
+          { icon: Calendar, label: "TOTAL", value: `${allWorkouts.length}`, sub: "", color: "text-[#5af0b3]", bg: "bg-[#102418]" },
         ].map((s) => (
           <div key={s.label} className="bg-[#1a2e22] rounded-3xl p-5 space-y-3">
-            <div className="h-10 w-10 rounded-xl bg-[#102418] flex items-center justify-center">
-              <s.icon className="h-5 w-5 text-[#5af0b3]" strokeWidth={1.5} />
+            <div className={`h-10 w-10 rounded-xl ${s.bg} flex items-center justify-center`}>
+              <s.icon className={`h-5 w-5 ${s.color}`} strokeWidth={1.5} />
             </div>
             <p className="text-[11px] font-semibold uppercase tracking-widest text-[#85948b]">
               {s.label}
@@ -195,6 +238,11 @@ export default async function DashboardPage() {
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${zoneColors[seg.zone] ?? "bg-[#293e31] text-[#bbcac0]"}`}>
                           {seg.zone}
                         </span>
+                        {paceZones?.[seg.zone] && (
+                          <span className="text-[10px] text-[#85948b] font-mono">
+                            {paceZones[seg.zone].minPace}-{paceZones[seg.zone].maxPace}/km
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}

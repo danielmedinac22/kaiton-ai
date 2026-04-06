@@ -17,7 +17,7 @@ const navItems = [
   { href: "/coach", label: "Coach", icon: MessageSquare },
   { href: "/workouts", label: "Entrenos", icon: Footprints },
   { href: "/plan", label: "Plan", icon: CalendarDays },
-  { href: "/strava", label: "Strava", icon: Activity },
+  { href: "/strava", label: "Strava", icon: Activity, activeColor: "text-[#f0925a]" },
   { href: "/settings", label: "Config", icon: Settings },
 ];
 
@@ -48,7 +48,7 @@ export function DesktopNav() {
               className={cn(
                 "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all",
                 isActive
-                  ? "bg-[#102418] text-[#5af0b3]"
+                  ? `bg-[#102418] ${"activeColor" in item && item.activeColor ? item.activeColor : "text-[#5af0b3]"}`
                   : "text-[#d0e8d6]/60 hover:bg-[#1a2e22] hover:text-[#d0e8d6]"
               )}
             >
@@ -79,7 +79,7 @@ export function MobileNav() {
               className={cn(
                 "flex flex-col items-center justify-center gap-1 transition-all",
                 isActive
-                  ? "bg-[#102418] text-[#5af0b3] rounded-2xl px-5 py-2"
+                  ? `bg-[#102418] ${"activeColor" in item && item.activeColor ? item.activeColor : "text-[#5af0b3]"} rounded-2xl px-5 py-2`
                   : "text-[#d0e8d6]/60 hover:text-[#5af0b3] px-3 py-2"
               )}
             >

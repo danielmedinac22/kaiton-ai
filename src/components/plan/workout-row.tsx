@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle2, ChevronDown } from "lucide-react";
 import type { WorkoutSegment } from "@/lib/types";
+import type { PaceZones } from "@/lib/training/pace-zones";
 
 const ZONE_COLORS: Record<string, string> = {
   Z1: "bg-[#5af0b3]/20 text-[#5af0b3]",
@@ -28,6 +29,7 @@ export function WorkoutRow({
   targetHrZone,
   targetRpe,
   segments,
+  paceZones,
 }: {
   date: string;
   title: string;
@@ -36,6 +38,7 @@ export function WorkoutRow({
   targetHrZone: string | null;
   targetRpe: number | null;
   segments: WorkoutSegment[];
+  paceZones?: PaceZones | null;
 }) {
   const [expanded, setExpanded] = useState(false);
   const hasSegments = segments.length > 0;
@@ -94,6 +97,11 @@ export function WorkoutRow({
                 <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${zoneColor}`}>
                   {seg.zone}
                 </span>
+                {paceZones?.[seg.zone] && (
+                  <span className="text-[10px] text-[#85948b] font-mono">
+                    {paceZones[seg.zone].minPace}-{paceZones[seg.zone].maxPace}/km
+                  </span>
+                )}
               </div>
             );
           })}

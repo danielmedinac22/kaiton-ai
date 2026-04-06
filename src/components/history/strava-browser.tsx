@@ -12,6 +12,7 @@ import {
   MapPin,
   Heart,
   Mountain,
+  RefreshCw,
 } from "lucide-react";
 
 type StravaActivityMapped = {
@@ -89,6 +90,12 @@ export function StravaBrowser({
     fetchActivities(next);
   };
 
+  const handleRefresh = () => {
+    setPage(1);
+    setHasMore(true);
+    fetchActivities(1);
+  };
+
   const handleImport = async (act: StravaActivityMapped) => {
     setImportingId(act.id);
     try {
@@ -160,9 +167,19 @@ export function StravaBrowser({
             Selecciona los entrenamientos que quieres importar
           </p>
         </div>
-        <span className="px-3 py-1 rounded-full bg-[#1c503a] text-[#5af0b3] text-[10px] font-bold uppercase tracking-widest">
-          Conectado
-        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRefresh}
+            disabled={loading}
+            className="px-3 py-1.5 rounded-full border border-[#3c4a42] text-[10px] font-bold uppercase tracking-widest text-[#bbcac0] hover:bg-[#1a2e22] active:scale-95 transition-all flex items-center gap-1.5 disabled:opacity-50"
+          >
+            <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
+            Refrescar
+          </button>
+          <span className="px-3 py-1 rounded-full bg-[#1c503a] text-[#5af0b3] text-[10px] font-bold uppercase tracking-widest">
+            Conectado
+          </span>
+        </div>
       </div>
 
       {error && (

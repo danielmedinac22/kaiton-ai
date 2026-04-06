@@ -131,12 +131,21 @@ export function SettingsForm({ athleteData, zones }: { athleteData: AthleteData;
         <div className={sectionClass}>
           <p className={sectionTitle}>Zonas de FC (Karvonen)</p>
           <div className="space-y-2">
-            {zones.map((z) => (
-              <div key={z.zoneNumber} className="flex items-center justify-between text-sm">
-                <span className="text-[#85948b]">Z{z.zoneNumber} — {z.name}</span>
-                <span className="font-mono text-[#5af0b3] text-xs">{z.minHr}-{z.maxHr} bpm</span>
-              </div>
-            ))}
+            {zones.map((z) => {
+              const zoneColor: Record<number, string> = {
+                1: "text-[#5af0b3]",
+                2: "text-[#5af0b3]",
+                3: "text-[#f0d85a]",
+                4: "text-[#f0925a]",
+                5: "text-[#f05a5a]",
+              };
+              return (
+                <div key={z.zoneNumber} className="flex items-center justify-between text-sm">
+                  <span className="text-[#85948b]">Z{z.zoneNumber} — {z.name}</span>
+                  <span className={`font-mono text-xs ${zoneColor[z.zoneNumber] ?? "text-[#5af0b3]"}`}>{z.minHr}-{z.maxHr} bpm</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

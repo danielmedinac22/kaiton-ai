@@ -1,24 +1,24 @@
 "use client";
 
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { Send, Bot, User, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MarkdownMessage } from "@/components/coach/markdown-message";
 
 const quickActions = [
-  "Genera mi plan de entrenamiento",
-  "Analiza mi ultima semana",
-  "Calcula mis zonas de FC",
-  "Ajusta el plan de esta semana",
-  "Que entreno hoy?",
-  "Como va mi preparacion?",
+  { text: "Genera mi plan de entrenamiento", warm: true },
+  { text: "Analiza mi ultima semana", warm: false },
+  { text: "Calcula mis zonas de FC", warm: true },
+  { text: "Ajusta el plan de esta semana", warm: false },
+  { text: "Que entreno hoy?", warm: false },
+  { text: "Como va mi preparacion?", warm: false },
 ];
 
-const TOOL_LABELS: Record<string, string> = {
-  getRecentWorkouts: "Entrenamientos revisados",
-  getCurrentPlanStatus: "Plan revisado",
-  calculateHRZones: "Zonas calculadas",
-  generateTrainingPlan: "Plan generado",
-  adjustPlan: "Plan ajustado",
+const TOOL_LABELS: Record<string, { label: string; color: string }> = {
+  getRecentWorkouts: { label: "Entrenamientos revisados", color: "bg-[#1c503a] text-[#5af0b3]" },
+  getCurrentPlanStatus: { label: "Plan revisado", color: "bg-[#1c503a] text-[#5af0b3]" },
+  calculateHRZones: { label: "Zonas calculadas", color: "bg-[#f0d85a]/20 text-[#f0d85a]" },
+  generateTrainingPlan: { label: "Plan generado", color: "bg-[#f0925a]/20 text-[#f0925a]" },
+  adjustPlan: { label: "Plan ajustado", color: "bg-[#ffccad]/20 text-[#ffccad]" },
 };
 
 type Message = {
@@ -32,8 +32,27 @@ export default function CoachPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch("/api/chat/history")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.messages?.length) {
+          setMessages(
+            data.messages.map((m: { id: number; role: string; content: string }) => ({
+              id: m.id.toString(),
+              role: m.role as "user" | "assistant",
+              text: m.content,
+            }))
+          );
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingHistory(false));
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -99,19 +118,43 @@ export default function CoachPage() {
           <div className="h-10 w-10 rounded-full bg-[#102418] flex items-center justify-center">
             <Bot className="h-5 w-5 text-[#5af0b3]" strokeWidth={1.5} />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="font-heading font-bold text-sm">Coach Kaiton</h1>
             <p className="text-[11px] text-[#85948b]">
               Tu entrenador personal de running con IA
             </p>
           </div>
+          {messages.length > 0 && (
+            <button
+              onClick={async () => {
+                await fetch("/api/chat/history", { method: "DELETE" });
+                setMessages([]);
+              }}
+              className="px-3 py-1.5 rounded-full border border-[#3c4a42] text-[10px] font-bold uppercase tracking-widest text-[#85948b] hover:text-[#ffb4ab] hover:border-[#ffb4ab]/40 active:scale-95 transition-all flex items-center gap-1.5"
+            >
+              <Trash2 className="h-3 w-3" />
+              Limpiar
+            </button>
+          )}
         </div>
       </div>
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 md:px-6 py-6">
         <div className="max-w-2xl mx-auto space-y-5">
-          {messages.length === 0 && !loading && (
+          {loadingHistory && (
+            <div className="flex gap-3">
+              <div className="h-8 w-8 rounded-full bg-[#102418] flex items-center justify-center shrink-0 mt-1">
+                <Bot className="h-4 w-4 text-[#5af0b3]" strokeWidth={1.5} />
+              </div>
+              <div className="bg-[#1a2e22] rounded-2xl rounded-tl-none p-4 flex items-center gap-2 text-sm text-[#85948b]">
+                <Loader2 className="h-4 w-4 animate-spin text-[#5af0b3]" />
+                Cargando historial...
+              </div>
+            </div>
+          )}
+
+          {messages.length === 0 && !loading && !loadingHistory && (
             <>
               <div className="flex gap-3">
                 <div className="h-8 w-8 rounded-full bg-[#102418] flex items-center justify-center shrink-0 mt-1">
@@ -128,11 +171,15 @@ export default function CoachPage() {
               <div className="flex flex-wrap gap-2 pl-11">
                 {quickActions.map((action) => (
                   <button
-                    key={action}
-                    onClick={() => setInput(action)}
-                    className="px-4 py-2 rounded-full border border-[#3c4a42] bg-[#0b1f14] text-xs font-medium text-[#bbcac0] hover:bg-[#1a2e22] active:scale-95 transition-all"
+                    key={action.text}
+                    onClick={() => setInput(action.text)}
+                    className={`px-4 py-2 rounded-full border text-xs font-medium active:scale-95 transition-all ${
+                      action.warm
+                        ? "border-[#ffccad]/30 bg-[#2a2010] text-[#ffccad] hover:bg-[#3d2800]"
+                        : "border-[#3c4a42] bg-[#0b1f14] text-[#bbcac0] hover:bg-[#1a2e22]"
+                    }`}
                   >
-                    {action}
+                    {action.text}
                   </button>
                 ))}
               </div>
@@ -157,14 +204,17 @@ export default function CoachPage() {
                 {/* Tool badges */}
                 {m.toolsUsed && m.toolsUsed.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
-                    {m.toolsUsed.map((t, i) => (
-                      <span
-                        key={i}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1c503a] text-[10px] font-bold uppercase tracking-wider text-[#5af0b3]"
-                      >
-                        {TOOL_LABELS[t] ?? t}
-                      </span>
-                    ))}
+                    {m.toolsUsed.map((t, i) => {
+                      const tool = TOOL_LABELS[t];
+                      return (
+                        <span
+                          key={i}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${tool?.color ?? "bg-[#1c503a] text-[#5af0b3]"}`}
+                        >
+                          {tool?.label ?? t}
+                        </span>
+                      );
+                    })}
                   </div>
                 )}
                 <div

@@ -4,22 +4,7 @@ import { db } from "@/lib/db";
 import { workoutLog } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import { WorkoutForm } from "@/components/history/workout-form";
-import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
-
-const TYPE_LABELS: Record<string, string> = {
-  easy: "Easy Run", tempo: "Tempo", intervals: "Intervalos",
-  long_run: "Long Run", recovery: "Recovery Walk", race: "Carrera",
-  cross_training: "Cross Training", rest: "Descanso",
-};
-
-const FEELING_BADGES: Record<string, { label: string; color: string }> = {
-  great: { label: "Excelente", color: "bg-[#5af0b3] text-[#003825]" },
-  good: { label: "Bien", color: "bg-[#1c503a] text-[#5af0b3]" },
-  ok: { label: "Normal", color: "bg-[#293e31] text-[#bbcac0]" },
-  tired: { label: "Cansado", color: "bg-[#293e31] text-[#ffccad]" },
-  exhausted: { label: "Agotado", color: "bg-[#93000a]/20 text-[#ffb4ab]" },
-};
+import { WorkoutCard } from "@/components/history/workout-card";
 
 export default async function WorkoutsPage() {
   const workouts = await db.select().from(workoutLog).orderBy(desc(workoutLog.date)).limit(100);
@@ -44,50 +29,21 @@ export default async function WorkoutsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {workouts.map((w) => {
-            const feeling = w.feeling ? FEELING_BADGES[w.feeling] : null;
-            return (
-              <div
-                key={w.id}
-                className="bg-[#1a2e22] rounded-3xl p-6 border-l-4 border-[#5af0b3]/20 hover:bg-[#293e31] transition-all group"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className="font-heading font-extrabold text-base">
-                        {TYPE_LABELS[w.type] ?? w.type}
-                      </span>
-                      {feeling && (
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${feeling.color}`}>
-                          {feeling.label}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-[#85948b]">
-                      {format(parseISO(w.date), "EEEE d MMM yyyy", { locale: es })}
-                    </p>
-                    {w.notes && (
-                      <p className="text-xs text-[#bbcac0]/70 mt-1 italic">{w.notes}</p>
-                    )}
-                  </div>
-                  <div className="text-right space-y-1">
-                    {w.distanceKm && (
-                      <p className="font-heading font-extrabold text-xl tracking-tighter">
-                        {w.distanceKm}
-                        <span className="text-xs font-normal text-[#85948b] ml-0.5">km</span>
-                      </p>
-                    )}
-                    {w.durationMinutes && (
-                      <p className="text-xs text-[#bbcac0]">{w.durationMinutes} min</p>
-                    )}
-                    <p className="text-[11px] text-[#85948b]">
-                      RPE {w.rpe}{w.avgHr ? ` / ${w.avgHr} bpm` : ""}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {workouts.map((w) => (
+            <WorkoutCard
+              key={w.id}
+              id={w.id}
+              date={w.date}
+              type={w.type}
+              distanceKm={w.distanceKm}
+              durationMinutes={w.durationMinutes}
+              avgHr={w.avgHr}
+              rpe={w.rpe}
+              feeling={w.feeling}
+              notes={w.notes}
+              stravaActivityId={w.stravaActivityId}
+            />
+          ))}
         </div>
       )}
     </div>

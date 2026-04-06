@@ -1,10 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Loader2, X } from "lucide-react";
+import { Plus, Loader2, X, Download, Activity } from "lucide-react";
 import { logWorkout } from "@/lib/actions/workouts";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+
+export type LatestStravaActivity = {
+  id: number;
+  name: string;
+  distanceKm: number;
+  durationMinutes: number;
+  date: string;
+  pace: string;
+  avgHr: number | null;
+  maxHr: number | null;
+  type: string;
+};
 
 const WORKOUT_TYPES = [
   { value: "easy", label: "Easy Run" },
@@ -25,10 +37,12 @@ const FEELINGS = [
   { value: "exhausted", label: "Agotado" },
 ];
 
-export function WorkoutForm({ plannedWorkoutId }: { plannedWorkoutId?: number }) {
+export function WorkoutForm({ plannedWorkoutId, latestStrava }: { plannedWorkoutId?: number; latestStrava?: LatestStravaActivity | null }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [importingStrava, setImportingStrava] = useState(false);
+  const [stravaImported, setStravaImported] = useState(false);
   const [form, setForm] = useState({
     date: format(new Date(), "yyyy-MM-dd"),
     type: "easy",
@@ -66,6 +80,36 @@ export function WorkoutForm({ plannedWorkoutId }: { plannedWorkoutId?: number })
     }
   };
 
+  const STRAVA_TYPE_MAP: Record<string, string> = {
+    Run: "easy", VirtualRun: "easy", Trail: "long_run",
+    Walk: "recovery", Race: "race", Hike: "long_run",
+  };
+
+  const handleStravaImport = async () => {
+    if (!latestStrava) return;
+    setImportingStrava(true);
+    try {
+      await logWorkout({
+        date: latestStrava.date,
+        type: STRAVA_TYPE_MAP[latestStrava.type] ?? "easy",
+        distanceKm: latestStrava.distanceKm,
+        durationMinutes: latestStrava.durationMinutes,
+        avgHr: latestStrava.avgHr ?? undefined,
+        maxHr: latestStrava.maxHr ?? undefined,
+        rpe: 5,
+        avgPace: latestStrava.pace !== "-" ? latestStrava.pace : undefined,
+        notes: `Importado de Strava: ${latestStrava.name}`,
+        stravaActivityId: latestStrava.id.toString(),
+      });
+      setStravaImported(true);
+      router.refresh();
+    } catch (e) {
+      console.error("Strava import failed:", e);
+    } finally {
+      setImportingStrava(false);
+    }
+  };
+
   const inputClass =
     "w-full bg-[#011208] ring-1 ring-[#3c4a42]/15 focus:ring-[#5af0b3]/40 rounded-lg py-3 px-4 text-[#d0e8d6] text-sm outline-none transition-all placeholder:text-[#85948b]";
   const selectClass =
@@ -75,13 +119,33 @@ export function WorkoutForm({ plannedWorkoutId }: { plannedWorkoutId?: number })
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="px-4 py-2 rounded-full border border-[#5af0b3]/40 text-[#5af0b3] text-xs font-semibold uppercase tracking-wider hover:bg-[#5af0b3]/10 active:scale-95 transition-all flex items-center gap-1.5"
-      >
-        <Plus className="h-3.5 w-3.5" />
-        Registrar
-      </button>
+      <div className="flex flex-col items-end gap-2">
+        <button
+          onClick={() => setOpen(true)}
+          className="px-4 py-2 rounded-full border border-[#5af0b3]/40 text-[#5af0b3] text-xs font-semibold uppercase tracking-wider hover:bg-[#5af0b3]/10 active:scale-95 transition-all flex items-center gap-1.5"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Registrar
+        </button>
+
+        {latestStrava && !stravaImported && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-[#2a2010] border border-[#ffccad]/20 max-w-[280px]">
+            <Activity className="h-3.5 w-3.5 text-[#f0925a] shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] text-[#ffccad] font-semibold truncate">{latestStrava.name}</p>
+              <p className="text-[10px] text-[#85948b]">{latestStrava.distanceKm} km — {latestStrava.pace}/km</p>
+            </div>
+            <button
+              onClick={handleStravaImport}
+              disabled={importingStrava}
+              className="px-2.5 py-1 rounded-full btn-gradient-warm text-[10px] font-bold shrink-0 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center gap-1"
+            >
+              {importingStrava ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
+              Importar
+            </button>
+          </div>
+        )}
+      </div>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
